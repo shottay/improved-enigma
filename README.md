@@ -1,95 +1,136 @@
-# Game Design Document
+# 🔥 FLAME - IT-Sicherheit & Datenschutz Lernspiel
 
-## Game Overview
+Ein interaktives Webspiel zum Erlernen von IT-Sicherheit und Datenschutz-Grundlagen mit Gamification-Elementen.
 
-Interaktives Webspiel zum Thema IT-Sicherhiet und Datenschutz.
-Es soll einen Lern und Aufklärungseffekt haben.
-Ich brauche einen Gamification Ansatz , also Spielerische Elmente, wie Rangliste, Erfahrungspunkte, Quests etc...
+---
 
-### Spielkonzept
+## 🚀 Quick Start
 
-Lernspiel zum Erlernen von grundlegenden Datenschutz Konzepten. Es soll ein Digitaler Lernfragebogen werden der mit interaktivität das Thema vermitteln soll. Es soll aufbauend gelernt werden, das heißt zuerst soll mit Lerntexten das Thema näher gebracht werden. Daraufhin wird ein Quiz freigeschaltet, welches den Wissensstand abfragt. Wenn das Quiz erfolgreich bestanden ist wird ein Point and Click Abenteuer freigeschaltet. 
+### Voraussetzungen
+- **Node.js** (v16+)
+- **npm** Package Manager
+- **Git**
 
-Über das Quiz und das Abenteuer können Punkte für eine Rangliste erarbeitet werden.
+### Installation
 
-### Spielertypen
+```bash
+# 1. Repository klonen
+git clone <repository-url>
+cd flame
 
-nach Richard A. Bartle
+# 2. Dependencies installieren
+npm install
 
-#### Killer
+# 3. Entwicklungsserver starten
+npm run dev
+```
 
-wird angesprochen durch Punkte sammeln und sich Vergleichen in der Rangliste
+🎮 **Das Spiel ist dann unter `http://localhost:5173` verfügbar!**
 
-#### Achiever
+---
 
-werden motiviert durch Belohnungen (Sound und visuelle Effekte beim Lösen von Aufgaben)
+## 🎯 Game Design Document
 
-#### Socializer
+### 🎲 Spielkonzept
 
-wird motiviert durch ein Community Gefühl (Sociale Stats -> wie haben die anderen abgeschnitten, evtl wie die verschiedenen Teams in einem Unternehmen abgeschnitten haben)
+**FLAME** ist ein aufbauendes Lernspiel mit drei Modulen:
 
-#### Explorer
+```
+📚 Lerntexte → 🧠 Quiz → 🔍 Point-and-Click Abenteuer
+```
 
-wird durch neue Spielweisen motiviert (viele Wimmelbilder)
+- **Ziel**: Grundlegende Datenschutz und IT-Sicherheits-Konzepte spielerisch vermitteln
+- **Methode**: Interaktiver digitaler Lernfragebogen mit Gamification
+- **Progression**: Aufbauendes Lernsystem mit Belohnungen
 
-### Gameplay & Mechanik
+---
 
-1. Erklärtexte
+## 🎮 Gameplay & Mechanik
 
-    Kurze prägnante Lehrtexte
-    Ein visueller Fortschrittsbalekn zeigt den Lernfortschritt an.
-    Mechanik: Lesen und Klicken
-    Herausforderung: spannende Texte damit der Lernende seine Motivation/Aufmerksamkeit nicht verliert.
+### 1. 📖 Erklärtexte
+- ✅ Kurze, prägnante Lehrtexte
+- 📊 Visueller Fortschrittsbalken
+- 🎯 **Mechanik**: Lesen und Klicken
+- 🔥 **Challenge**: Spannende Texte für hohe Motivation
 
-2. Quiz
+### 2. 🧠 Quiz
+- 🔓 Freischaltung nach Lerntexten
+- ❓ Multiple Choice Fragen
+- ✅ Alle Fragen müssen richtig beantwortet werden
+- ⚡ Punkte basierend auf Geschwindigkeit
+- 🎊 Schaltet das Abenteuer frei
 
-    Schaltet sich frei nach dem man die Erklärtexte gelesen hat.
-    Multiple Choice fragen
-    Alle Fragen müssen richtig beantwortet werden.
-    Generiert Punkte für die Rangliste. Je nachdem wie schnell man die Frage richtig beantwortet hat.
-    Schaltet das Abentuer frei.
+### 3. 🔍 Point-and-Click Abenteuer
+- 🏢 **2 Level** mit steigender Schwierigkeit
+- 🎯 Suche nach Datenschutz- und IT-Sicherheitsrisiken
+- ⏱️ Zeitbasierte Punktevergabe
+- ❌ Punkteverlust bei Falschklicks
+- 🧠 Anwendung des Erlernten
 
-3. Point and Click Abenteuer
+---
 
-    2 Level
-    Schwierigkeit erhöht sich mit der Anzahl an Point die man finden muss.
-    Suche nach Datenschutz und IT-Sicherheits Risiken
-    Anwendung des Erlernten.
-    Punkte werden nach der Schnelligkeit vergeben
-    Punkte werden beim Flaschklicken verloren
+## 🏆 Gamification-Elemente
+
+| Element | Beschreibung |
+|---------|--------------|
+| 🎯 **Punktesystem** | Sammle Punkte in Quiz & Abenteuer |
+| 🏅 **Rangliste** | Vergleiche dich mit anderen Spielern |
+| ⏱️ **Timer** | Zeitdruck für zusätzliche Herausforderung |
+| 📊 **Fortschrittsbalken** | Visueller Lernfortschritt |
+| 🔓 **Progressive Freischaltung** | Level-System mit Belohnungen |
+
+---
+
+## 👥 Spielertypen (nach Richard A. Bartle)
+
+### 🗡️ Killer
+**Motivation**: Wettbewerb und Dominanz
+- ✅ Punkte sammeln und vergleichen
+- ✅ Ranglisten-Position
+
+### 🏆 Achiever  
+**Motivation**: Erfolge und Belohnungen
+- 🔄 Sound- und visuelle Effekte (geplant)
+- ✅ Achievement-System
+
+### 👥 Socializer
+**Motivation**: Community und soziale Interaktion
+- 🔄 Soziale Stats (geplant)
+- 🔄 Team-Vergleiche (geplant)
+
+### 🗺️ Explorer
+**Motivation**: Entdeckung und Abwechslung
+- ✅ Point-and-Click Mechanik
+- 🔄 Verschiedene Wimmelbilder (geplant)
+
+---
+
+
+## ⚠️ Bekannte Issues
+
+### 🐛 Bugs
+- [ ] Timer läuft weiter bei abgeschlossenem Abenteuer
+- [ ] Punkte werden nicht in der NavBar angezeigt
+
+### 🔧 Technische Schulden
+- [ ] Monolithische Komponenten → kleinere Komponenten
+- [ ] Business Logic von UI trennen
+- [ ] Pinia Store einbauen
+- [ ] Types auslagern
+- [ ] localStorage Validierung
+- [ ] Tests implementieren
+- [ ] Accessibility verbessern
+
+### 📋 Nicht umgesetzt
+- [ ] **Lock-System** (Lernen → Quiz → Abenteuer)
+- [ ] **Mobile Responsiveness**
+- [ ] **Audio-Feedback**
+- [ ] **Punkteverlust** bei Falschklicks
+- [ ] **Soziale Elemente**
+- [ ] **Wimmelbilder** erstellen
+
+---
 
 
 
-#### Gamification
-
-- Punktesystem
-- Rangliste
-- Timer
-- Fortschrittsbalken
-- Progressives Freischalten (denke an Levels)
-
-
-### Technische Schulden
-
-- Komponenten sind nur Views, für bessere Wartbarkeit und Nutzung sollte kleinere Komponenten geschrieben werden.
-- Bilder einfügen im Lernbereich
-- Kein klare Trennung von Business Logic, state Management und Darstellung -> Monolitische Komponenten auflösen, pinia stores einbauen, styles woanders definieren und magic numbers entfernen.
-- Types auslagern für bessere Wartbarkeit, Safety und Erweiterbarkeit
-- localStorage data validieren , allgemeine Sicherheitsaspekte einfügen (XSS, etc. ...)
-- accessibility
-- Tests einbauen
-- UI/UX
-
-### Bugs
-
-- Timer im Abenteuer läuft weiter bei abgeschlossenen Abenteuer
-- Punkte werden nicht in der NavBar angezeigt
-
-### Nicht umgesetzt
-
-- Locksystem -  Die Spielenden sollten nicht direkt das Quiz und Abenteuer starten können, sondern es aufbauend freischalten. Lernen -> Quiz -> Abenteuer
-- Mobile Responsiveness
-- Audio Feedback , zb für das abschließen von Modulen.
-- Punkteverlust beim Falschklicken im Abenteuer
-- Soziale Elemente
-- Wimmelbilder erstellen/einfügen
+**🎮 Viel Spaß beim Lernen von IT-Sicherheit und Datenschutz!**
