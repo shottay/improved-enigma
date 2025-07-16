@@ -64,11 +64,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
-
-const router = useRouter()
-const route = useRoute()
+import { ref, onMounted, onUnmounted } from 'vue'
 
 const isCollapsed = ref(false)
 const userPoints = ref(0)
@@ -81,31 +77,43 @@ const toggleNav = () => {
 }
 
 const loadUserData = () => {
-  // Load user points from localStorage
   const savedPoints = localStorage.getItem('userPoints')
   if (savedPoints) {
-    userPoints.value = parseInt(savedPoints)
-    // Calculate level based on points (every 100 points = 1 level)
-    userLevel.value = Math.floor(userPoints.value / 100) + 1
+    const points = parseInt(savedPoints, 10)
+    if (!isNaN(points) && points >= 0) {
+      userPoints.value = points
+      userLevel.value = Math.floor(points / 100) + 1
+    }
   }
   
-  // Load navigation state
   const savedNavState = localStorage.getItem('nav-collapsed')
   if (savedNavState) {
     isCollapsed.value = savedNavState === 'true'
   }
 }
 
+let storageListener: ((e: StorageEvent) => void) | null = null
+
 onMounted(() => {
   loadUserData()
   
-  // Listen for storage changes to update points in real time
-  window.addEventListener('storage', (e) => {
+  storageListener = (e: StorageEvent) => {
     if (e.key === 'userPoints' && e.newValue) {
-      userPoints.value = parseInt(e.newValue)
-      userLevel.value = Math.floor(userPoints.value / 100) + 1
+      const points = parseInt(e.newValue, 10)
+      if (!isNaN(points) && points >= 0) {
+        userPoints.value = points
+        userLevel.value = Math.floor(points / 100) + 1
+      }
     }
-  })
+  }
+  
+  window.addEventListener('storage', storageListener)
+})
+
+onUnmounted(() => {
+  if (storageListener) {
+    window.removeEventListener('storage', storageListener)
+  }
 })
 </script>
 

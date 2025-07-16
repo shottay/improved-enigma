@@ -84,7 +84,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -131,7 +131,15 @@ const learningTopics: LearningTopic[] = [
 // Computed properties
 const totalSteps = computed(() => learningTopics.length)
 const progressPercentage = computed(() => (currentStep.value / totalSteps.value) * 100)
-const currentTopic = computed(() => learningTopics[currentStep.value - 1])
+const currentTopic = computed(() => {
+  const index = currentStep.value - 1
+  if (index >= 0 && index < learningTopics.length) {
+    return learningTopics[index]
+  }
+  // Fallback to first topic if index is invalid
+  console.warn('Invalid step index, falling back to first topic')
+  return learningTopics[0]
+})
 const hasNextTopic = computed(() => currentStep.value < totalSteps.value)
 
 // Methods
@@ -166,24 +174,45 @@ const goHome = () => {
   router.push('/')
 }
 
+const STORAGE_KEYS = {
+  PROGRESS: 'learningProgress',
+  COMPLETED: 'learningCompleted',
+  COMPLETED_DATE: 'learningCompletedDate'
+} as const
+
+const validateStep = (step: number): boolean => {
+  return Number.isInteger(step) && step >= 1 && step <= totalSteps.value
+}
+
+const loadProgress = () => {
+  try {
+    const savedProgress = localStorage.getItem(STORAGE_KEYS.PROGRESS)
+    if (savedProgress) {
+      const parsed = parseInt(savedProgress, 10)
+      if (validateStep(parsed)) {
+        currentStep.value = parsed
+      } else {
+        console.warn('Invalid learning progress found, resetting to step 1')
+        currentStep.value = 1
+      }
+    }
+  } catch (error) {
+    console.error('Failed to load learning progress:', error)
+    currentStep.value = 1
+  }
+}
+
 // Lifecycle
 onMounted(() => {
-  // Load progress if available
-  const savedProgress = localStorage.getItem('learningProgress')
-  if (savedProgress) {
-    currentStep.value = parseInt(savedProgress)
-  }
-  
-  // Save progress whenever step changes
-  const saveProgress = () => {
-    localStorage.setItem('learningProgress', currentStep.value.toString())
-  }
-  
-  // Watch for step changes
-  setInterval(() => {
-    saveProgress()
-  }, 1000)
+  loadProgress()
 })
+
+// Use a watcher instead of setInterval
+watch(currentStep, () => {
+  localStorage.setItem('learningProgress', currentStep.value.toString())
+}, { immediate: true })
+
+
 </script>
 
 <style scoped>

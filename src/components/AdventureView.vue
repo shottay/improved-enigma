@@ -26,84 +26,129 @@
       </div>
     </div>
 
-    <!-- Game Area -->
-    <div v-if="!gameCompleted" class="game-container">
-      <div class="level-info">
-        <h2>{{ currentLevelData.title }}</h2>
-        <p>{{ currentLevelData.description }}</p>
-      </div>
-      
-      <div class="game-area" ref="gameArea">
-        <!-- Background Image -->
-        <div class="game-background" :style="{ backgroundColor: currentLevelData.backgroundColor }">
-          <div class="placeholder-content">
-            <h3>{{ currentLevelData.sceneName }}</h3>
-            <p>Klicke auf verdächtige Bereiche!</p>
+    <!-- Main Game Layout -->
+    <div v-if="!gameCompleted" class="main-layout">
+      <!-- Game Container (Links) -->
+      <div class="game-container">
+        <div class="level-info">
+          <h2>{{ currentLevelData.title }}</h2>
+          <p>{{ currentLevelData.description }}</p>
+        </div>
+        
+        <!-- Hauptspielbereich -->
+        <div class="game-area" ref="gameArea">
+          <!-- Background Image -->
+          <div class="game-background" :style="{ backgroundColor: currentLevelData.backgroundColor }">
+            <div class="placeholder-content">
+              <h3>{{ currentLevelData.sceneName }}</h3>
+              <p>Klicke auf verdächtige Bereiche!</p>
+            </div>
           </div>
-        </div>
-        
-        <!-- Clickable Points -->
-        <div 
-          v-for="(point, index) in currentLevelData.points" 
-          :key="index"
-          class="click-point"
-          :class="{ 
-            'found': point.found,
-            'pulsing': !point.found
-          }"
-          :style="{ 
-            left: point.x + '%', 
-            top: point.y + '%' 
-          }"
-          @click="clickPoint(index)"
-          v-show="!point.found"
-        >
-          <div class="point-indicator"></div>
-        </div>
-        
-        <!-- Found Points Indicators -->
-        <div 
-          v-for="(point, index) in currentLevelData.points" 
-          :key="'found-' + index"
-          class="found-indicator"
-          :style="{ 
-            left: point.x + '%', 
-            top: point.y + '%' 
-          }"
-          v-show="point.found"
-        >
-          ✓
-        </div>
-      </div>
-
-      <!-- Click Feedback -->
-      <div v-if="showClickFeedback" class="click-feedback" :class="{ 'success': lastClickSuccess }">
-        <div class="feedback-content">
-          <h3 v-if="lastClickSuccess">Gefunden! 🎉</h3>
-          <h3 v-else>Hier ist nichts... 🤔</h3>
-          <p v-if="lastClickSuccess">{{ lastFoundPoint?.description }}</p>
-          <p v-else>Schau genauer hin!</p>
-          <div v-if="lastClickSuccess" class="points-earned">
-            +{{ pointsPerFind }} Punkte
+          
+          <!-- Clickable Points -->
+          <div 
+            v-for="(point, index) in currentLevelData.points" 
+            :key="index"
+            class="click-point"
+            :class="{ 
+              'found': point.found,
+              'pulsing': !point.found
+            }"
+            :style="{ 
+              left: point.x + '%', 
+              top: point.y + '%' 
+            }"
+            @click="clickPoint(index)"
+            v-show="!point.found"
+          >
+            <div class="point-indicator"></div>
+          </div>
+          
+          <!-- Found Points Indicators -->
+          <div 
+            v-for="(point, index) in currentLevelData.points" 
+            :key="'found-' + index"
+            class="found-indicator"
+            :style="{ 
+              left: point.x + '%', 
+              top: point.y + '%' 
+            }"
+            v-show="point.found"
+          >
+            ✓
           </div>
         </div>
       </div>
 
-      <!-- Level Complete -->
-      <div v-if="levelCompleted && !gameCompleted" class="level-complete-overlay">
-        <div class="level-complete-modal">
-          <h2>🎊 Level {{ currentLevel + 1 }} abgeschlossen!</h2>
-          <div class="level-stats">
-            <p>Alle {{ currentLevelData.totalPoints }} Risiken gefunden!</p>
-            <p>Zeit: {{ formattedTime }}</p>
-            <p>Punkte erhalten: {{ currentLevelData.totalPoints * pointsPerFind }}</p>
-            <p>Zeitbonus: {{ timeBonus }} Punkte</p>
+      <!-- Feedback Sidebar (Rechts) -->
+      <div class="feedback-sidebar">
+        <!-- Permanent Instructions -->
+        <div v-if="!showClickFeedback" class="instructions">
+          <div class="instructions-content">
+            <h3>🎯 Spielanleitung</h3>
+            <p>Klicke auf die roten, pulsierenden Punkte um Datenschutz-Risiken zu entdecken!</p>
+            <div class="tips">
+              <h4>💡 Tipps:</h4>
+              <ul>
+                <li>Schaue nach unsicheren Passwörtern</li>
+                <li>Achte auf offene Dokumente</li>
+                <li>Finde unverschlüsselte Geräte</li>
+                <li>Entdecke Sicherheitslücken</li>
+              </ul>
+            </div>
+            <div class="progress-info">
+              <h4>📊 Fortschritt:</h4>
+              <p>{{ foundPoints }} von {{ currentLevelData.totalPoints }} Risiken gefunden</p>
+              <div class="progress-bar">
+                <div 
+                  class="progress-fill" 
+                  :style="{ width: (foundPoints / currentLevelData.totalPoints * 100) + '%' }"
+                ></div>
+              </div>
+            </div>
           </div>
-          <button @click="nextLevel" class="btn-primary">
-            <span v-if="currentLevel < levels.length - 1">Nächstes Level →</span>
-            <span v-else>Abenteuer abschließen</span>
-          </button>
         </div>
+
+        <!-- Click Feedback -->
+        <div v-if="showClickFeedback" class="click-feedback" :class="{ 'success': lastClickSuccess }">
+          <div class="feedback-content">
+            <h3 v-if="lastClickSuccess">Gefunden! 🎉</h3>
+            <h3 v-else>Hier ist nichts... 🤔</h3>
+            <p v-if="lastClickSuccess">{{ lastFoundPoint?.description }}</p>
+            <p v-else>Schau genauer hin!</p>
+            <div v-if="lastClickSuccess" class="points-earned">
+              +{{ pointsPerFind }} Punkte
+            </div>
+            
+            <!-- Progress Update -->
+            <div v-if="lastClickSuccess" class="progress-update">
+              <p><strong>Fortschritt:</strong> {{ foundPoints }}/{{ currentLevelData.totalPoints }}</p>
+              <div class="progress-bar">
+                <div 
+                  class="progress-fill" 
+                  :style="{ width: (foundPoints / currentLevelData.totalPoints * 100) + '%' }"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Level Complete -->
+    <div v-if="levelCompleted && !gameCompleted" class="level-complete-overlay">
+      <div class="level-complete-modal">
+        <h2>🎊 Level {{ currentLevel + 1 }} abgeschlossen!</h2>
+        <div class="level-stats">
+          <p>Alle {{ currentLevelData.totalPoints }} Risiken gefunden!</p>
+          <p>Zeit: {{ formattedTime }}</p>
+          <p>Punkte erhalten: {{ currentLevelData.totalPoints * pointsPerFind }}</p>
+          <p>Zeitbonus: {{ timeBonus }} Punkte</p>
+        </div>
+        <button @click="nextLevel" class="btn-primary">
+          <span v-if="currentLevel < levels.length - 1">Nächstes Level →</span>
+          <span v-else>Abenteuer abschließen</span>
+        </button>
       </div>
     </div>
 
@@ -258,10 +303,10 @@ const clickPoint = async (index: number) => {
   // Wait for next tick to ensure reactivity update
   await nextTick()
   
-  // Hide feedback after 2 seconds
+  // Hide feedback after 4 seconds (longer to read)
   setTimeout(() => {
     showClickFeedback.value = false
-  }, 2000)
+  }, 4000)
   
   // Check if level is complete
   console.log('Checking completion:', foundPoints.value, '===', currentLevelData.value.totalPoints)
@@ -269,7 +314,7 @@ const clickPoint = async (index: number) => {
     console.log('Level completed! All points found!')
     setTimeout(() => {
       completeLevel()
-    }, 2500)
+    }, 4500)
   }
 }
 
@@ -364,7 +409,7 @@ onUnmounted(() => {
 
 <style scoped>
 .adventure-view {
-  max-width: 1200px;
+  max-width: 1600px;
   margin: 0 auto;
   padding: 20px;
   font-family: 'Arial', sans-serif;
@@ -416,9 +461,23 @@ onUnmounted(() => {
   font-weight: bold;
 }
 
+/* Neues Hauptlayout */
+.main-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+/* Game Container nimmt den Hauptbereich ein */
+.game-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
 .level-info {
   text-align: center;
-  margin-bottom: 20px;
   background: linear-gradient(135deg, #667eea, #764ba2);
   color: white;
   padding: 20px;
@@ -437,11 +496,10 @@ onUnmounted(() => {
 .game-area {
   position: relative;
   width: 100%;
-  height: 500px;
+  height: 600px; /* Größer für mehr Spielraum */
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  margin-bottom: 30px;
 }
 
 .game-background {
@@ -476,6 +534,140 @@ onUnmounted(() => {
   margin: 0;
 }
 
+/* Sidebar als separater Bereich */
+.feedback-sidebar {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  height: fit-content;
+  min-height: 400px;
+  position: sticky;
+  top: 20px;
+}
+
+.instructions {
+  padding: 20px;
+  height: 100%;
+}
+
+.instructions-content h3 {
+  color: #333;
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+}
+
+.instructions-content p {
+  color: #666;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.tips {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.tips h4 {
+  color: #333;
+  margin-bottom: 10px;
+  font-size: 1rem;
+}
+
+.tips ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.tips li {
+  color: #666;
+  margin-bottom: 5px;
+  font-size: 0.9rem;
+}
+
+.progress-info {
+  background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+  padding: 15px;
+  border-radius: 8px;
+  border: 2px solid #2196F3;
+}
+
+.progress-info h4 {
+  color: #1976D2;
+  margin-bottom: 10px;
+  font-size: 1rem;
+}
+
+.progress-info p {
+  color: #555;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.progress-bar {
+  height: 8px;
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4CAF50, #8BC34A);
+  transition: width 0.5s ease;
+}
+
+.click-feedback {
+  padding: 20px;
+  border-left: 5px solid #ff9800;
+  animation: slideIn 0.3s ease-out;
+  min-height: 400px;
+}
+
+.click-feedback.success {
+  border-left-color: #4CAF50;
+  background: linear-gradient(135deg, #e8f5e8, #f1f8e9);
+}
+
+.feedback-content h3 {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 1.3rem;
+}
+
+.feedback-content p {
+  margin: 0 0 15px 0;
+  color: #666;
+  line-height: 1.5;
+  font-size: 1rem;
+}
+
+.points-earned {
+  background: #4CAF50;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: bold;
+  display: inline-block;
+  margin-bottom: 20px;
+}
+
+.progress-update {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 15px;
+}
+
+.progress-update p {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+/* Click Point Styles */
 .click-point {
   position: absolute;
   width: 40px;
@@ -530,45 +722,12 @@ onUnmounted(() => {
   100% { transform: translate(-50%, -50%) scale(1); }
 }
 
-.click-feedback {
-  background: white;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border-left: 5px solid #ff9800;
-  animation: slideIn 0.3s ease-out;
-}
-
-.click-feedback.success {
-  border-left-color: #4CAF50;
-}
-
 @keyframes slideIn {
   from { transform: translateY(-20px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
 
-.feedback-content h3 {
-  margin: 0 0 10px 0;
-  color: #333;
-}
-
-.feedback-content p {
-  margin: 0 0 10px 0;
-  color: #666;
-  line-height: 1.4;
-}
-
-.points-earned {
-  background: #4CAF50;
-  color: white;
-  padding: 5px 12px;
-  border-radius: 15px;
-  font-size: 14px;
-  font-weight: bold;
-  display: inline-block;
-}
-
+/* Modal Styles */
 .level-complete-overlay {
   position: fixed;
   top: 0;
@@ -693,6 +852,31 @@ onUnmounted(() => {
 .btn-secondary:hover {
   background: #5a6268;
   transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .main-layout {
+    grid-template-columns: 1fr 300px;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .main-layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .feedback-sidebar {
+    position: static;
+    order: -1; /* Sidebar oben auf mobilen Geräten */
+    min-height: auto;
+  }
+  
+  .game-area {
+    height: 500px;
+  }
 }
 
 @media (max-width: 768px) {
