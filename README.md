@@ -91,7 +91,7 @@ npm run dev
 ### 🏆 Achiever  
 **Motivation**: Erfolge und Belohnungen
 - 🔄 Sound- und visuelle Effekte (geplant)
-- ✅ Achievement-System
+- 🔄 Achievement-System (geplant)
 
 ### 👥 Socializer
 **Motivation**: Community und soziale Interaktion
