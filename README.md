@@ -16,7 +16,7 @@ Ein interaktives Webspiel zum Erlernen von IT-Sicherheit und Datenschutz-Grundla
 ```bash
 # 1. Repository klonen
 git clone <repository-url>
-cd flame
+cd /path/to/yourProject
 
 # 2. Dependencies installieren
 npm install
